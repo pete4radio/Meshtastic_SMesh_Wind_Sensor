@@ -1,6 +1,6 @@
 #include "configuration.h"
 
-#if !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR && __has_include("DFRobotLarkSensor.h")
+#if !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR && __has_include(<DFRobot_LarkWeatherStation.h>)
 
 #include "../mesh/generated/meshtastic/telemetry.pb.h"
 #include "SMeshWindSensor.h"
@@ -15,7 +15,7 @@
 // Static variable to track last time wind speed was calculated
 static uint32_t lastWindSpeedMillis = 0;
 
-SMeshWindSensor::SMeshWindSensor() : TelemetrySensor(meshtastic_TelemetrySensorType_SMESH_WIND_VANE, "SMESH_WIND_VANE") {}
+SMeshWindSensor::SMeshWindSensor() : TelemetrySensor(meshtastic_TelemetrySensorType_SMESH_WIND_VANE, "SMesh Wind Sensor") {}
 
 bool SMeshWindSensor::initDevice(TwoWire *bus, ScanI2C::FoundDevice *dev)
 {

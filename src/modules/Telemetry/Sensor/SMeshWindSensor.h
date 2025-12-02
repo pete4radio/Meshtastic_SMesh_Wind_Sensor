@@ -4,17 +4,17 @@
 #define _MT_SMESHWINDSENSOR_H
 #include "configuration.h"
 
-#if !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR && __has_include("DFRobotLarkSensor.h")
+#if !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR && __has_include(<DFRobot_LarkWeatherStation.h>)
 
 #include "../mesh/generated/meshtastic/telemetry.pb.h"
 #include "TelemetrySensor.h"
-#include "DFRobotLarkSensor.h"
+#include <DFRobot_LarkWeatherStation.h>
 #include <string>
 
 class SMeshWindSensor : public TelemetrySensor
 {
   private:
-    DFRobotLarkSensor_I2C lark = DFRobotLarkSensor_I2C();
+    DFRobot_LarkWeatherStation_I2C lark = DFRobot_LarkWeatherStation_I2C();
 
   public:
     SMeshWindSensor();

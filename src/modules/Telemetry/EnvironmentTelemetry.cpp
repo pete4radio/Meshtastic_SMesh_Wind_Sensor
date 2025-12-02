@@ -101,7 +101,7 @@ extern void drawCommonHeader(OLEDDisplay *display, int16_t x, int16_t y, const c
 #include "Sensor/MLX90632Sensor.h"
 #endif
 
-#if __has_include(<DFRobotLarkSensor.h>)
+#if __has_include(<DFRobot_LarkWeatherStation.h>)
 #include "Sensor/SMeshWindSensor.h"
 #endif
 
@@ -196,8 +196,8 @@ void EnvironmentTelemetryModule::i2cScanFinished(ScanI2C *i2cScanner)
 #endif
 
 #if !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR && !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR_EXTERNAL
-#if __has_include(<DFRobotLarkSensor.h>)
-    // SMesh Wind Sensor (AS5600 + GPIO counter) - uses modified DFRobot library
+#if __has_include(<DFRobot_LarkWeatherStation.h>)
+    // SMesh Wind Sensor (AS5600 + GPIO counter) - uses DFRobot library
     addSensor<SMeshWindSensor>(i2cScanner, ScanI2C::DeviceType::AS5600);
 #endif
 #if __has_include(<DFRobot_RainfallSensor.h>)
@@ -301,9 +301,9 @@ int32_t EnvironmentTelemetryModule::runOnce()
         without having to configure it from the PythonAPI or WebUI.
     */
 
-    // moduleConfig.telemetry.environment_measurement_enabled = 1;
-    // moduleConfig.telemetry.environment_screen_enabled = 1;
-    // moduleConfig.telemetry.environment_update_interval = 15;
+    moduleConfig.telemetry.environment_measurement_enabled = 1;
+    moduleConfig.telemetry.environment_screen_enabled = 1;
+    moduleConfig.telemetry.environment_update_interval = 15;
 
     if (!(moduleConfig.telemetry.environment_measurement_enabled || moduleConfig.telemetry.environment_screen_enabled ||
           ENVIRONMENTAL_TELEMETRY_MODULE_ENABLE)) {
@@ -322,7 +322,7 @@ int32_t EnvironmentTelemetryModule::runOnce()
             if (!sensors.empty()) {
                 result = DEFAULT_SENSOR_MINIMUM_WAIT_TIME_BETWEEN_READS;
 
-                    // Count and list detected sensors
+            // Count and list detected sensors
             int sensorCount = 0;
             for (TelemetrySensor *sensor : sensors) {
                 LOG_INFO("Environment Sensor %d: %s (initialized: %s, running: %s)", 

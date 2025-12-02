@@ -101,7 +101,7 @@ extern void drawCommonHeader(OLEDDisplay *display, int16_t x, int16_t y, const c
 #include "Sensor/MLX90632Sensor.h"
 #endif
 
-#if __has_include(<DFRobot_LarkWeatherStation.h>)
+#if __has_include("Sensor/SMeshWindSensor.h")
 #include "Sensor/SMeshWindSensor.h"
 #endif
 
@@ -196,7 +196,7 @@ void EnvironmentTelemetryModule::i2cScanFinished(ScanI2C *i2cScanner)
 #endif
 
 #if !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR && !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR_EXTERNAL
-#if __has_include(<DFRobot_LarkWeatherStation.h>)
+#if __has_include(<Adafruit_AS5600.h>)
     // SMesh Wind Sensor (AS5600 + GPIO counter) - uses DFRobot library
     addSensor<SMeshWindSensor>(i2cScanner, ScanI2C::DeviceType::AS5600);
 #endif

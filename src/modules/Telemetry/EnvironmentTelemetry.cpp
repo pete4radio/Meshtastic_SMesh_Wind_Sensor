@@ -101,8 +101,8 @@ extern void drawCommonHeader(OLEDDisplay *display, int16_t x, int16_t y, const c
 #include "Sensor/MLX90632Sensor.h"
 #endif
 
-#if __has_include(<DFRobot_LarkWeatherStation.h>)
-#include "Sensor/DFRobotLarkSensor.h"
+#if __has_include(<DFRobotLarkSensor.h>)
+#include "Sensor/SMeshWindSensor.h"
 #endif
 
 #if __has_include(<DFRobot_RainfallSensor.h>)
@@ -196,9 +196,9 @@ void EnvironmentTelemetryModule::i2cScanFinished(ScanI2C *i2cScanner)
 #endif
 
 #if !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR && !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR_EXTERNAL
-#if __has_include(<DFRobot_LarkWeatherStation.h>)
+#if __has_include(<DFRobotLarkSensor.h>)
     // SMesh Wind Sensor (AS5600 + GPIO counter) - uses modified DFRobot library
-    addSensor<DFRobotLarkSensor>(i2cScanner, ScanI2C::DeviceType::AS5600);
+    addSensor<SMeshWindSensor>(i2cScanner, ScanI2C::DeviceType::AS5600);
 #endif
 #if __has_include(<DFRobot_RainfallSensor.h>)
     addSensor<DFRobotGravitySensor>(i2cScanner, ScanI2C::DeviceType::DFROBOT_RAIN);
@@ -272,6 +272,17 @@ void EnvironmentTelemetryModule::i2cScanFinished(ScanI2C *i2cScanner)
 #endif
 
 #endif
+    
+    // Count and list detected sensors
+    int sensorCount = 0;
+    for (TelemetrySensor *sensor : sensors) {
+        LOG_INFO("Environment Sensor %d: %s (initialized: %s, running: %s)", 
+                 ++sensorCount, 
+                 sensor->getSensorName(),
+                 sensor->isInitialized() ? "yes" : "no",
+                 sensor->isRunning() ? "yes" : "no");
+    }
+    LOG_INFO("Total Environment sensors detected: %d", sensorCount);
 }
 
 int32_t EnvironmentTelemetryModule::runOnce()
@@ -310,6 +321,17 @@ int32_t EnvironmentTelemetryModule::runOnce()
             // check if we have at least one sensor
             if (!sensors.empty()) {
                 result = DEFAULT_SENSOR_MINIMUM_WAIT_TIME_BETWEEN_READS;
+
+                    // Count and list detected sensors
+            int sensorCount = 0;
+            for (TelemetrySensor *sensor : sensors) {
+                LOG_INFO("Environment Sensor %d: %s (initialized: %s, running: %s)", 
+                        ++sensorCount, 
+                        sensor->getSensorName(),
+                        sensor->isInitialized() ? "yes" : "no",
+                        sensor->isRunning() ? "yes" : "no");
+            }
+            LOG_INFO("(firstTime) Total Environment sensors detected: %d", sensorCount);
             }
 
 #ifdef T1000X_SENSOR_EN

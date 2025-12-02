@@ -1,12 +1,11 @@
 #include "configuration.h"
 
-#if !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR && __has_include(<DFRobot_LarkWeatherStation.h>)
+#if !MESHTASTIC_EXCLUDE_ENVIRONMENTAL_SENSOR && __has_include("DFRobotLarkSensor.h")
 
 #include "../mesh/generated/meshtastic/telemetry.pb.h"
-#include "DFRobotLarkSensor.h"
+#include "SMeshWindSensor.h"
 #include "TelemetrySensor.h"
 #include "gps/GeoCoord.h"
-#include <DFRobot_LarkWeatherStation.h>
 #include <string>
 
 #ifdef ARCH_ESP32
@@ -16,26 +15,20 @@
 // Static variable to track last time wind speed was calculated
 static uint32_t lastWindSpeedMillis = 0;
 
-DFRobotLarkSensor::DFRobotLarkSensor() : TelemetrySensor(meshtastic_TelemetrySensorType_SMESH_WIND_VANE, "SMESH_WIND_VANE") {}
+SMeshWindSensor::SMeshWindSensor() : TelemetrySensor(meshtastic_TelemetrySensorType_SMESH_WIND_VANE, "SMESH_WIND_VANE") {}
 
-bool DFRobotLarkSensor::initDevice(TwoWire *bus, ScanI2C::FoundDevice *dev)
+bool SMeshWindSensor::initDevice(TwoWire *bus, ScanI2C::FoundDevice *dev)
 {
     LOG_INFO("Init sensor: %s", sensorName);
-    lark = DFRobot_LarkWeatherStation_I2C(dev->address.address, bus);
-
-    if (lark.begin() == 0) // DFRobotLarkSensor init
     {
         LOG_DEBUG("SMESH_WIND_VANE Init Succeed");
         status = true;
-    } else {
-        LOG_ERROR("SMESH_WIND_VANE Init Failed");
-        status = false;
-    }
+    } 
     initI2CSensor();
     return status;
 }
 
-bool DFRobotLarkSensor::getMetrics(meshtastic_Telemetry *measurement)
+bool SMeshWindSensor::getMetrics(meshtastic_Telemetry *measurement)
 {
     // Get wind direction as raw 12-bit value (0-4095) from AS5600
     uint16_t windDirection = lark.getValue("Dir").toInt();
